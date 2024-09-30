@@ -19,10 +19,10 @@ Description : The testbench for linux OS. This is not particularly fast due to
 #define THD1_STACK        (&Stack_1[60000])
 #define THD2_STACK        (&Stack_2[60000])
 /* How to read counter */
-static __inline__ unsigned long long rdtsc(void)// @NOTE 
+static __inline__ unsigned long long rdtsc(void)
 {
     unsigned long long int x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));// @NOTE 
+    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
     return x;
 }
 

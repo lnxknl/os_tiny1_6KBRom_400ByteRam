@@ -153,7 +153,7 @@ _RMP_Start
 ;Output      : None.
 ;Return      : None.
 ;*****************************************************************************/
-PendSV_Handler// @NOTE 
+PendSV_Handler
     MRS                 R0,PSP              ;Spill all the registers onto the user stack
     TST                 LR,#0x10            ;Are we using the FPU or not at all?
     DCI                 0xBF08              ;IT EQ ;If yes, (DCI for compatibility with no FPU support)
@@ -166,7 +166,7 @@ PendSV_Handler// @NOTE
     LDR                 R1,=RMP_Cur_SP      ;Save The SP to control block.
     STR                 R0,[R1]
                 
-    BL                  _RMP_Get_High_Rdy   ;Get the highest ready task.// @NOTE 
+    BL                  _RMP_Get_High_Rdy   ;Get the highest ready task.
                 
     LDR                 R1,=RMP_Cur_SP      ;Load the SP.
     LDR                 R0,[R1]

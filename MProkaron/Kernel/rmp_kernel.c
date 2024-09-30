@@ -491,7 +491,7 @@ Input       : None.
 Output      : None.
 Return      : None.
 ******************************************************************************/
-void _RMP_Get_High_Rdy(void)// @NOTE 
+void _RMP_Get_High_Rdy(void)
 {
     rmp_cnt_t Count;
     
@@ -514,7 +514,7 @@ void _RMP_Get_High_Rdy(void)// @NOTE
         Count=RMP_MSB_Get(RMP_Bitmap[Count])+(Count<<RMP_WORD_ORDER);
         
         /* See if the current thread and the next thread are the same. If yes, place the current at the end of the queue */
-        if(RMP_Cur_Thd==(struct RMP_Thd*)(RMP_Run[Count].Next))// @NOTE 
+        if(RMP_Cur_Thd==(struct RMP_Thd*)(RMP_Run[Count].Next))
         {
             RMP_COVERAGE_MARKER();
             RMP_List_Del(RMP_Cur_Thd->Run_Head.Prev, RMP_Cur_Thd->Run_Head.Next);
@@ -1991,7 +1991,7 @@ Input       : None.
 Output      : None.
 Return      : int - This function never returns.
 ******************************************************************************/
-int main(void)// @NOTE 
+int main(void)
 {
     rmp_ptr_t Count;
     
@@ -2039,7 +2039,7 @@ int main(void)// @NOTE
     RMP_Bitmap[0]|=1;
     
     /* Set current thread and stack */
-    RMP_Cur_Thd=(struct RMP_Thd*)(&RMP_Init_Thd);// @NOTE 
+    RMP_Cur_Thd=(struct RMP_Thd*)(&RMP_Init_Thd);
     RMP_Cur_SP=RMP_Init_Thd.Stack;
     
     /* Now jump to the user function and will never return. Initialization of stack is not needed */

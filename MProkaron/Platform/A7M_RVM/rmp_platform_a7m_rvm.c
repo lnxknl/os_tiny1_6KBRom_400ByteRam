@@ -70,7 +70,7 @@ Return      : None.
 void _RMP_Low_Level_Init(void)
 {
     RVM_Virt_Reg_Timer(RMP_SysTick_Handler);
-    RVM_Virt_Reg_Ctxsw(RMP_PendSV_Handler);// @NOTE 
+    RVM_Virt_Reg_Ctxsw(RMP_PendSV_Handler);
 }
 /* End Function:_RMP_Low_Level_Init ******************************************/
 
@@ -155,7 +155,7 @@ Return      : None.
 void _RMP_Yield(void)
 {
     RVM_Virt_Yield();
-} // asm
+}
 /* End Function:_RMP_Yield ***************************************************/
 
 /* Begin Function:RMP_PendSV_Handler ******************************************
@@ -164,7 +164,7 @@ Input       : None.
 Output      : None.
 Return      : None.
 ******************************************************************************/
-void RMP_PendSV_Handler(void)// @NOTE 
+void RMP_PendSV_Handler(void)
 {
     rmp_ptr_t* SP;
     /* Spill all the registers onto the user stack
