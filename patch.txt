@@ -1,0 +1,110 @@
+diff --git a/MProkaron/Benchmark/Platform/rmp_test_X86_linux.h b/MProkaron/Benchmark/Platform/rmp_test_X86_linux.h
+index 4574ebb..45bbbb5 100644
+--- a/MProkaron/Benchmark/Platform/rmp_test_X86_linux.h
++++ b/MProkaron/Benchmark/Platform/rmp_test_X86_linux.h
+@@ -19,10 +19,10 @@ Description : The testbench for linux OS. This is not particularly fast due to
+ #define THD1_STACK        (&Stack_1[60000])
+ #define THD2_STACK        (&Stack_2[60000])
+ /* How to read counter */
+-static __inline__ unsigned long long rdtsc(void)
++static __inline__ unsigned long long rdtsc(void)// @NOTE 
+ {
+     unsigned long long int x;
+-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
++    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));// @NOTE 
+     return x;
+ }
+ 
+diff --git a/MProkaron/Kernel/rmp_kernel.c b/MProkaron/Kernel/rmp_kernel.c
+index e1f8bc7..77acc6d 100644
+--- a/MProkaron/Kernel/rmp_kernel.c
++++ b/MProkaron/Kernel/rmp_kernel.c
+@@ -491,7 +491,7 @@ Input       : None.
+ Output      : None.
+ Return      : None.
+ ******************************************************************************/
+-void _RMP_Get_High_Rdy(void)
++void _RMP_Get_High_Rdy(void)// @NOTE 
+ {
+     rmp_cnt_t Count;
+     
+@@ -514,7 +514,7 @@ void _RMP_Get_High_Rdy(void)
+         Count=RMP_MSB_Get(RMP_Bitmap[Count])+(Count<<RMP_WORD_ORDER);
+         
+         /* See if the current thread and the next thread are the same. If yes, place the current at the end of the queue */
+-        if(RMP_Cur_Thd==(struct RMP_Thd*)(RMP_Run[Count].Next))
++        if(RMP_Cur_Thd==(struct RMP_Thd*)(RMP_Run[Count].Next))// @NOTE 
+         {
+             RMP_COVERAGE_MARKER();
+             RMP_List_Del(RMP_Cur_Thd->Run_Head.Prev, RMP_Cur_Thd->Run_Head.Next);
+@@ -1991,7 +1991,7 @@ Input       : None.
+ Output      : None.
+ Return      : int - This function never returns.
+ ******************************************************************************/
+-int main(void)
++int main(void)// @NOTE 
+ {
+     rmp_ptr_t Count;
+     
+@@ -2039,7 +2039,7 @@ int main(void)
+     RMP_Bitmap[0]|=1;
+     
+     /* Set current thread and stack */
+-    RMP_Cur_Thd=(struct RMP_Thd*)(&RMP_Init_Thd);
++    RMP_Cur_Thd=(struct RMP_Thd*)(&RMP_Init_Thd);// @NOTE 
+     RMP_Cur_SP=RMP_Init_Thd.Stack;
+     
+     /* Now jump to the user function and will never return. Initialization of stack is not needed */
+diff --git a/MProkaron/Platform/A7M_RVM/rmp_platform_a7m_rvm.c b/MProkaron/Platform/A7M_RVM/rmp_platform_a7m_rvm.c
+index 8866b0d..666362e 100644
+--- a/MProkaron/Platform/A7M_RVM/rmp_platform_a7m_rvm.c
++++ b/MProkaron/Platform/A7M_RVM/rmp_platform_a7m_rvm.c
+@@ -70,7 +70,7 @@ Return      : None.
+ void _RMP_Low_Level_Init(void)
+ {
+     RVM_Virt_Reg_Timer(RMP_SysTick_Handler);
+-    RVM_Virt_Reg_Ctxsw(RMP_PendSV_Handler);
++    RVM_Virt_Reg_Ctxsw(RMP_PendSV_Handler);// @NOTE 
+ }
+ /* End Function:_RMP_Low_Level_Init ******************************************/
+ 
+@@ -155,7 +155,7 @@ Return      : None.
+ void _RMP_Yield(void)
+ {
+     RVM_Virt_Yield();
+-}
++} // asm
+ /* End Function:_RMP_Yield ***************************************************/
+ 
+ /* Begin Function:RMP_PendSV_Handler ******************************************
+@@ -164,7 +164,7 @@ Input       : None.
+ Output      : None.
+ Return      : None.
+ ******************************************************************************/
+-void RMP_PendSV_Handler(void)
++void RMP_PendSV_Handler(void)// @NOTE 
+ {
+     rmp_ptr_t* SP;
+     /* Spill all the registers onto the user stack
+diff --git a/MProkaron/Platform/A8M/rmp_platform_a8m_asm.s b/MProkaron/Platform/A8M/rmp_platform_a8m_asm.s
+index 936b6a2..c324a2c 100644
+--- a/MProkaron/Platform/A8M/rmp_platform_a8m_asm.s
++++ b/MProkaron/Platform/A8M/rmp_platform_a8m_asm.s
+@@ -153,7 +153,7 @@ _RMP_Start
+ ;Output      : None.
+ ;Return      : None.
+ ;*****************************************************************************/
+-PendSV_Handler
++PendSV_Handler// @NOTE 
+     MRS                 R0,PSP              ;Spill all the registers onto the user stack
+     TST                 LR,#0x10            ;Are we using the FPU or not at all?
+     DCI                 0xBF08              ;IT EQ ;If yes, (DCI for compatibility with no FPU support)
+@@ -166,7 +166,7 @@ PendSV_Handler
+     LDR                 R1,=RMP_Cur_SP      ;Save The SP to control block.
+     STR                 R0,[R1]
+                 
+-    BL                  _RMP_Get_High_Rdy   ;Get the highest ready task.
++    BL                  _RMP_Get_High_Rdy   ;Get the highest ready task.// @NOTE 
+                 
+     LDR                 R1,=RMP_Cur_SP      ;Load the SP.
+     LDR                 R0,[R1]
